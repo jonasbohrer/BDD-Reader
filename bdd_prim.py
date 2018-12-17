@@ -28,11 +28,11 @@ class BddGraph:
         else:
             return False
 
-    def reset_weights(self):
+    def reset_weights(self, n = 99999):
         for x in self.nodes:
-            self.nodes[x].reset_weight()
+            self.nodes[x].reset_weight(n)
 
-## Defines nodes and properties inside the BDD graph
+## Defines nodes inside the BDD graph
 class BddNode:
     def __init__(self, name):
         self.name = name
@@ -58,8 +58,8 @@ class BddNode:
     def get_parent(self):
         return self.parent
 
-    def reset_weight(self):
-        self.weight = 99999
+    def reset_weight(self, n = 99999):
+        self.weight = n
 
     def set_parent(self, node):
         self.parent = node
@@ -67,9 +67,11 @@ class BddNode:
     def set_weight(self, weight):
         self.weight = weight
 
-#Prim algorithm for the BddGraph class
-def prim(bdd_graph, starting_node):
+## Prim algorithm for the BddGraph class
+def prim(bdd_graph, starting_node, ignore = []):
+
     visited_list = [starting_node]
+    visited_list = visited_list + ignore
 
     #gets nodes remaining to be visited
     graph_nodes = bdd_graph.get_all_nodes()
@@ -122,7 +124,7 @@ def prim(bdd_graph, starting_node):
     print("### Final structure resulting from Prim: "+new_bdd.to_str())
     return new_bdd
 
-#Dijkstra algorithm for the BddGraph class
+## Dijkstra algorithm for the BddGraph class
 def dijkstra(bdd_graph, starting_node):
 
     starting_node.set_weight(0)
@@ -189,7 +191,94 @@ def dijkstra(bdd_graph, starting_node):
     print("### Final structure resulting from Dijkstra: "+new_bdd.to_str())
     return new_bdd
 
-#Loads a .txt file containing a BDD graph for prim/dijkstra algorithm
+def tsm(bdd_graph, starting_node):
+
+
+    #gets a node
+    #gets available connections
+    #starts a branch for each connection
+        #runs prim for the connection
+        #collects total tree cost
+    #compare costs
+    #decide which one to branch next based on cost
+
+    print("Starting node: ", starting_node.get_name())
+
+    bdd_graph.reset_weights(0)
+
+    visited_list = [starting_node]
+
+    available_connections = [node.get_connections() for node in visited_list]
+    
+    for connections_dict in available_connections:
+        smallest = 99999
+        for n in connections_dict:
+            if n != "origin":
+                if (connections_dict[n][0].get_weight() < smallest):
+                    smallest = connections_dict[n][0].get_weight()
+                    candidate = connections_dict[n][0]
+                    print(candidate.get_name())
+
+    #print(candidate)
+    #print(visited_list)
+
+    prim(bdd_graph, candidate, ignore = visited_list)
+    
+    exit(0)
+
+    #gets nodes remaining to be visited
+    graph_nodes = bdd_graph.get_all_nodes()
+    visit_list = [graph_nodes[node] for node in graph_nodes]
+
+    for x in visited_list:
+        visit_list.remove(x) 
+
+    final_tree = []
+    while visit_list != []:
+        print("current visited nodes:", [x.get_name() for x in visited_list], "remaining nodes:", [x.get_name() for x in visit_list])
+        #gets available connections
+        available_connections = [node.get_connections() for node in visited_list]
+
+        #searches for the shortest path
+        shortest_dist = 99999
+        for connections_dict in available_connections:
+            for value in connections_dict:
+                if (connections_dict[value][1] < shortest_dist) and (connections_dict[value][1] > 0) and (connections_dict[value][0] not in visited_list):
+                    shortest_dist = connections_dict[value][1]
+                    #saves closest node, origin and distance
+                    shortest_node = connections_dict[value][0]
+                    origin = connections_dict["origin"][0]
+                    print ("current shortest path:",shortest_dist, " from", origin.get_name(), "to", shortest_node.get_name())
+            
+        visited_list.append(shortest_node)
+        visit_list.remove(shortest_node)
+        final_tree.append([origin, shortest_node, shortest_dist])
+        print("removing", shortest_node.get_name(), "from visit list")
+
+    #Generate a new BDD, with the shortest paths
+    print("\n############## Re-creating structure ##############")
+    new_bdd = BddGraph()
+    for node in final_tree:
+        try:
+            node_name1 = node[0].get_name()
+            new_bdd.include(node_name1)
+            node1 = new_bdd.get_node(node_name1)
+
+            node_name2 = node[1].get_name()            
+            new_bdd.include(node_name2)
+            node2 = new_bdd.get_node(node_name2)
+
+            distance = node[2]
+            node1.connect(node2, distance)
+            node2.connect(node1, distance)
+        except:
+            print('Error creating connection', connection)
+
+    print("### Final structure resulting from Prim: "+new_bdd.to_str())
+    return new_bdd
+
+
+## Loads a .txt file containing a BDD graph for prim/dijkstra algorithm
 def load_file(filename, algorithm, starting_node_name):
     bdd_structure = []
 
@@ -217,7 +306,7 @@ def load_file(filename, algorithm, starting_node_name):
             node2 = bdd_graph.get_node(connection[1])
 
             node1.connect(node2, connection[2])
-            if (algorithm == "prim"):
+            if (algorithm == "prim") or (algorithm == "tsm"):
                 node2.connect(node1, connection[2])
         except:
             print('Error creating connection', connection)
@@ -228,10 +317,13 @@ def load_file(filename, algorithm, starting_node_name):
     final_node = node2
     if algorithm == "prim":
         prim(bdd_graph, starting_node)
-    else:
+    elif algorithm == "dijkstra":
         dijkstra(bdd_graph, starting_node)
+    elif algorithm == "tsm":
+        tsm(bdd_graph, starting_node)
 ##############################
 
+## Main function
 if __name__ == "__main__":
 
     try:
@@ -242,6 +334,6 @@ if __name__ == "__main__":
     except:
         print ('invalid arguments')
         filename = "bdd.txt"
-        algorithm = "dijkstra"
+        algorithm = "tsm"
         starting_node_name = 3
         load_file(filename, algorithm, starting_node_name)
