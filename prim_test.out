@@ -1,0 +1,59 @@
+PS C:\BDD-Reader\BDD-Reader> & py c:/BDD-Reader/BDD-Reader/bdd_functions.py
+Testing with main arguments:
+File: prim_test.txt
+Algorithm: prim
+Starting Node: 1
+
+[['1', '2', '7'], ['1', '4', '8'], ['2', '3', '6'], ['2', '4', '3'], ['3', '4', '4'], ['3', '5', '2'], ['3', '6', '5'], ['4', '5', '3'], ['5', '6', '2']]
+Node 1 already exists!
+Node 2 already exists!
+Node 2 already exists!
+Node 4 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 3 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 5 already exists!
+Node 5 already exists!
+Node 6 already exists!
+
+############## Loaded structure ##############:
+6: [['3', 5], ['5', 2], ['origin', 0]]
+1: [['4', 8], ['2', 7], ['origin', 0]]
+3: [['6', 5], ['4', 4], ['5', 2], ['2', 6], ['origin', 0]]
+4: [['3', 4], ['1', 8], ['5', 3], ['2', 3], ['origin', 0]]
+5: [['3', 2], ['6', 2], ['4', 3], ['origin', 0]]
+2: [['3', 6], ['4', 3], ['1', 7], ['origin', 0]]
+
+current visited nodes: ['1'] remaining nodes: ['6', '3', '4', '5', '2']
+current shortest path: 8  from 1 to 4
+current shortest path: 7  from 1 to 2
+removing 2 from visit list
+current visited nodes: ['1', '2'] remaining nodes: ['6', '3', '4', '5']
+current shortest path: 8  from 1 to 4
+current shortest path: 6  from 2 to 3
+current shortest path: 3  from 2 to 4
+removing 4 from visit list
+current visited nodes: ['1', '2', '4'] remaining nodes: ['6', '3', '5']
+current shortest path: 6  from 2 to 3
+current shortest path: 4  from 4 to 3
+current shortest path: 3  from 4 to 5
+removing 5 from visit list
+current visited nodes: ['1', '2', '4', '5'] remaining nodes: ['6', '3']
+current shortest path: 6  from 2 to 3
+current shortest path: 4  from 4 to 3
+current shortest path: 2  from 5 to 3
+removing 3 from visit list
+current visited nodes: ['1', '2', '4', '5', '3'] remaining nodes: ['6']
+current shortest path: 2  from 5 to 6
+removing 6 from visit list
+
+############## Re-creating structure ##############
+### Final structure resulting from Prim:
+6: [['5', 2], ['origin', 0]]
+1: [['2', 7], ['origin', 0]]
+3: [['5', 2], ['origin', 0]]
+4: [['5', 3], ['2', 3], ['origin', 0]]
+5: [['3', 2], ['6', 2], ['4', 3], ['origin', 0]]
+2: [['4', 3], ['1', 7], ['origin', 0]]

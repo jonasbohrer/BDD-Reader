@@ -1,0 +1,143 @@
+###################################### PRIM
+PS C:\BDD-Reader\BDD-Reader> & py c:/BDD-Reader/BDD-Reader/bdd_functions.py
+Testing with main arguments:
+File: bdd_test.txt
+Algorithm: prim
+Starting Node: 1
+
+[['1', '2', '10'], ['1', '4', '20'], ['2', '3', '5'], ['2', '7', '15'], ['3', '4', '3'], ['3', '5', '7'], ['4', '8', '10'], ['5', '6', '30'], ['5', '8', '15'], ['7', '6', '5']]
+Node 1 already exists!
+Node 2 already exists!
+Node 2 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 5 already exists!
+Node 5 already exists!
+Node 8 already exists!
+Node 7 already exists!
+Node 6 already exists!
+
+############## Loaded structure ##############:
+6: [['7', 5], ['5', 30], ['origin', 0]]
+3: [['5', 7], ['4', 3], ['origin', 0], ['2', 5]]
+1: [['4', 20], ['origin', 0], ['2', 10]]
+4: [['3', 3], ['1', 20], ['origin', 0], ['8', 10]]
+2: [['7', 15], ['3', 5], ['1', 10], ['origin', 0]]
+7: [['6', 5], ['origin', 0], ['2', 15]]
+5: [['3', 7], ['8', 15], ['6', 30], ['origin', 0]]
+8: [['5', 15], ['4', 10], ['origin', 0]]
+
+current visited nodes: ['1'] remaining nodes: ['6', '3', '4', '2', '7', '5', '8']
+current shortest path: 20  from 1 to 4
+current shortest path: 10  from 1 to 2
+removing 2 from visit list
+current visited nodes: ['1', '2'] remaining nodes: ['6', '3', '4', '7', '5', '8']
+current shortest path: 20  from 1 to 4
+current shortest path: 15  from 2 to 7
+current shortest path: 5  from 2 to 3
+removing 3 from visit list
+current visited nodes: ['1', '2', '3'] remaining nodes: ['6', '4', '7', '5', '8']
+current shortest path: 20  from 1 to 4
+current shortest path: 15  from 2 to 7
+current shortest path: 7  from 3 to 5
+current shortest path: 3  from 3 to 4
+removing 4 from visit list
+current visited nodes: ['1', '2', '3', '4'] remaining nodes: ['6', '7', '5', '8']
+current shortest path: 15  from 2 to 7
+current shortest path: 7  from 3 to 5
+removing 5 from visit list
+current visited nodes: ['1', '2', '3', '4', '5'] remaining nodes: ['6', '7', '8']
+current shortest path: 15  from 2 to 7
+current shortest path: 10  from 4 to 8
+removing 8 from visit list
+current visited nodes: ['1', '2', '3', '4', '5', '8'] remaining nodes: ['6', '7']
+current shortest path: 15  from 2 to 7
+removing 7 from visit list
+current visited nodes: ['1', '2', '3', '4', '5', '8', '7'] remaining nodes: ['6']
+current shortest path: 30  from 5 to 6
+current shortest path: 5  from 7 to 6
+removing 6 from visit list
+
+############## Re-creating structure ##############
+### Final structure resulting from Prim:
+6: [['7', 5], ['origin', 0]]
+3: [['5', 7], ['4', 3], ['origin', 0], ['2', 5]]
+1: [['origin', 0], ['2', 10]]
+5: [['3', 7], ['origin', 0]]
+2: [['7', 15], ['3', 5], ['1', 10], ['origin', 0]]
+7: [['6', 5], ['origin', 0], ['2', 15]]
+4: [['3', 3], ['8', 10], ['origin', 0]]
+8: [['4', 10], ['origin', 0]]
+
+###################################### DIJKSTRA
+PS C:\BDD-Reader\BDD-Reader> & py c:/BDD-Reader/BDD-Reader/bdd_functions.py
+Testing with main arguments:
+File: bdd_test.txt
+Algorithm: dijkstra
+Starting Node: 1
+
+[['1', '2', '10'], ['1', '4', '20'], ['2', '3', '5'], ['2', '7', '15'], ['3', '4', '3'], ['3', '5', '7'], ['4', '8', '10'], ['5', '6', '30'], ['5', '8', '15'], ['7', '6', '5']]
+Node 1 already exists!
+Node 2 already exists!
+Node 2 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 5 already exists!
+Node 5 already exists!
+Node 8 already exists!
+Node 7 already exists!
+Node 6 already exists!
+
+############## Loaded structure ##############:
+6: [['origin', 0]]
+7: [['6', 5], ['origin', 0]]
+8: [['origin', 0]]
+3: [['5', 7], ['origin', 0], ['4', 3]]
+5: [['6', 30], ['8', 15], ['origin', 0]]
+1: [['4', 20], ['origin', 0], ['2', 10]]
+2: [['7', 15], ['origin', 0], ['3', 5]]
+4: [['8', 10], ['origin', 0]]
+
+Current node: 1
+updated weight: 4 20
+updated weight: 2 10
+Current node: 4
+updated weight: 8 30
+Current node: 2
+updated weight: 7 25
+updated weight: 3 15
+Current node: 8
+Current node: 7
+updated weight: 6 30
+Current node: 3
+updated weight: 5 22
+updated weight: 4 18
+Current node: 6
+Current node: 5
+Current node: 4
+updated weight: 8 28
+Current node: 8
+Shortest path to node 6: [1, 2, 7, 6]
+Shortest path to node 7: [1, 2, 7]
+Shortest path to node 8: [1, 2, 3, 4, 8]
+Shortest path to node 3: [1, 2, 3]
+Shortest path to node 5: [1, 2, 3, 5]
+Shortest path to node 1: [1]
+Shortest path to node 2: [1, 2]
+Shortest path to node 4: [1, 2, 3, 4]
+[['7', '6', 5], ['2', '7', 15], ['1', '2', 10], ['4', '8', 10], ['3', '4', 3], ['2', '3', 5], ['3', '5', 7]]
+
+############## Re-creating structure ##############
+### Final structure resulting from Dijkstra:
+6: [['origin', 0]]
+7: [['6', 5], ['origin', 0]]
+8: [['origin', 0]]
+3: [['5', 7], ['origin', 0], ['4', 3]]
+5: [['origin', 0]]
+1: [['origin', 0], ['2', 10]]
+2: [['7', 15], ['origin', 0], ['3', 5]]
+4: [['8', 10], ['origin', 0]]

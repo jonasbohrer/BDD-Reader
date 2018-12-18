@@ -1,0 +1,65 @@
+PS C:\BDD-Reader\BDD-Reader> & py c:/BDD-Reader/BDD-Reader/bdd_functions.py
+Testing with main arguments:
+File: dijkstra_test.txt
+Algorithm: dijkstra
+Starting Node: 7
+
+[['1', '2', '6'], ['1', '4', '1'], ['2', '5', '1'], ['3', '1', '2'], ['3', '4', '3'], ['4', '5', '4'], ['6', '5', '2'], ['7', '1', '3'], ['7', '3', '2'], ['7', '6', '6']]
+Node 1 already exists!
+Node 2 already exists!
+Node 1 already exists!
+Node 3 already exists!
+Node 4 already exists!
+Node 4 already exists!
+Node 5 already exists!
+Node 5 already exists!
+Node 1 already exists!
+Node 7 already exists!
+Node 3 already exists!
+Node 7 already exists!
+Node 6 already exists!
+
+############## Loaded structure ##############:
+3: [['origin', 0], ['4', 3], ['1', 2]]
+4: [['origin', 0], ['5', 4]]
+7: [['origin', 0], ['6', 6], ['3', 2], ['1', 3]]
+6: [['origin', 0], ['5', 2]]
+2: [['origin', 0], ['5', 1]]
+1: [['origin', 0], ['4', 1], ['2', 6]]
+5: [['origin', 0]]
+
+Current node: 7
+updated weight: 6 6
+updated weight: 3 2
+updated weight: 1 3
+Current node: 6
+updated weight: 5 8
+Current node: 3
+updated weight: 4 5
+Current node: 1
+updated weight: 4 4
+updated weight: 2 9
+Current node: 5
+Current node: 4
+updated weight: 5 8
+Current node: 4
+Current node: 2
+Current node: 5
+Shortest path to node 3: [7, 3]
+Shortest path to node 4: [7, 1, 4]
+Shortest path to node 7: [7]
+Shortest path to node 6: [7, 6]
+Shortest path to node 2: [7, 1, 2]
+Shortest path to node 1: [7, 1]
+Shortest path to node 5: [7, 1, 4, 5]
+[['7', '3', 2], ['1', '4', 1], ['7', '1', 3], ['7', '6', 6], ['1', '2', 6], ['4', '5', 4]]
+
+############## Re-creating structure ##############
+### Final structure resulting from Dijkstra:
+3: [['origin', 0]]
+4: [['origin', 0], ['5', 4]]
+7: [['origin', 0], ['6', 6], ['3', 2], ['1', 3]]
+1: [['origin', 0], ['4', 1], ['2', 6]]
+5: [['origin', 0]]
+6: [['origin', 0]]
+2: [['origin', 0]]

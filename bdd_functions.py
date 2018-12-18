@@ -32,11 +32,26 @@ class BddGraph:
         for x in self.nodes:
             self.nodes[x].reset_weight(n)
 
+    def calculate_cost(self):
+        total_cost = 0
+        visited = []
+        to_visit = [self.get_all_nodes()[node] for node in self.get_all_nodes()]
+        for node_name in self.nodes:
+            node = self.nodes[node_name]
+            connections = node.get_connections()
+            for n in connections:
+                if (connections[n][0] in to_visit):
+                    total_cost = total_cost + connections[n][1]
+            
+            to_visit.remove(node)
+        return total_cost
+
+
 ## Defines nodes inside the BDD graph
 class BddNode:
     def __init__(self, name):
         self.name = name
-        self.weight = 9999
+        self.weight = 99999
         self.parent = None
         self.connections = {"origin" : [self, 0]}
 
@@ -78,7 +93,10 @@ def prim(bdd_graph, starting_node, ignore = []):
     visit_list = [graph_nodes[node] for node in graph_nodes]
 
     for x in visited_list:
-        visit_list.remove(x) 
+        try:
+            visit_list.remove(x) 
+        except:
+            pass
 
     final_tree = []
     while visit_list != []:
@@ -125,7 +143,7 @@ def prim(bdd_graph, starting_node, ignore = []):
     return new_bdd
 
 ## Dijkstra algorithm for the BddGraph class
-def dijkstra(bdd_graph, starting_node):
+def dijkstra(bdd_graph, starting_node, direction = "one"):
 
     starting_node.set_weight(0)
 
@@ -145,7 +163,7 @@ def dijkstra(bdd_graph, starting_node):
             for value in connections_dict:
                 if (value != "origin"):
                     new_weight = connections_dict["origin"][0].get_weight() + connections_dict[value][1]
-                    if (new_weight < connections_dict[value][0].get_weight()):
+                    if (new_weight < connections_dict[value][0].get_weight()) or ((new_weight == connections_dict[value][0].get_weight()) and (connections_dict["origin"][0].get_weight() < connections_dict[value][0].get_parent().get_weight())):
                         connections_dict[value][0].set_weight(new_weight)
                         connections_dict[value][0].set_parent(connections_dict["origin"][0])
 
@@ -155,6 +173,7 @@ def dijkstra(bdd_graph, starting_node):
             
         visited_list.append(connections_dict["origin"][0])
 
+    #Finds path according to minimum weights
     bdd_structure = []
     for node in graph_nodes:
         current_node = node
@@ -170,7 +189,7 @@ def dijkstra(bdd_graph, starting_node):
         print("Shortest path to node " + node.get_name() + ": "+str(path))
     print (bdd_structure)
 
-    #Generate a new BDD, with the shortest paths
+    #Generates a new BDD, with the shortest paths
     print("\n############## Re-creating structure ##############")
     new_bdd = BddGraph()
     for connection in bdd_structure:
@@ -185,6 +204,8 @@ def dijkstra(bdd_graph, starting_node):
 
             distance = connection[2]
             node1.connect(node2, distance)
+            if direction == "both":
+                node2.connect(node1, distance)
         except:
             print('Error creating connection', connection)
 
@@ -192,7 +213,6 @@ def dijkstra(bdd_graph, starting_node):
     return new_bdd
 
 def tsm(bdd_graph, starting_node):
-
 
     #gets a node
     #gets available connections
@@ -208,74 +228,33 @@ def tsm(bdd_graph, starting_node):
 
     visited_list = [starting_node]
 
-    available_connections = [node.get_connections() for node in visited_list]
-    
-    for connections_dict in available_connections:
-        smallest = 99999
-        for n in connections_dict:
-            if n != "origin":
-                if (connections_dict[n][0].get_weight() < smallest):
-                    smallest = connections_dict[n][0].get_weight()
-                    candidate = connections_dict[n][0]
-                    print(candidate.get_name())
+    print(len(bdd_graph.get_all_nodes()))
+    while(len(visited_list) < len(bdd_graph.get_all_nodes())):
 
-    #print(candidate)
-    #print(visited_list)
+        available_connections = [node.get_connections() for node in visited_list]
+        
+        for connections_dict in available_connections:
+            smallest = 99999
+            for n in connections_dict:
+                if n != "origin":
+                    if (connections_dict[n][0].get_weight() < smallest):
+                        smallest = connections_dict[n][0].get_weight()
+                        candidate = connections_dict[n][0]
 
-    prim(bdd_graph, candidate, ignore = visited_list)
+        #print(visited_list)
+
+        new_weight = prim(bdd_graph, candidate, ignore = visited_list).calculate_cost()
+        if (new_weight > 0) and ((candidate.get_weight() > new_weight) or (candidate.get_weight() == 0)):
+            candidate.set_weight(new_weight)
+
+        print(candidate.get_name(), new_weight)
+        visited_list.append(candidate)
+
+    dijkstra(bdd_graph, starting_node, direction="both")
     
     exit(0)
 
-    #gets nodes remaining to be visited
-    graph_nodes = bdd_graph.get_all_nodes()
-    visit_list = [graph_nodes[node] for node in graph_nodes]
-
-    for x in visited_list:
-        visit_list.remove(x) 
-
-    final_tree = []
-    while visit_list != []:
-        print("current visited nodes:", [x.get_name() for x in visited_list], "remaining nodes:", [x.get_name() for x in visit_list])
-        #gets available connections
-        available_connections = [node.get_connections() for node in visited_list]
-
-        #searches for the shortest path
-        shortest_dist = 99999
-        for connections_dict in available_connections:
-            for value in connections_dict:
-                if (connections_dict[value][1] < shortest_dist) and (connections_dict[value][1] > 0) and (connections_dict[value][0] not in visited_list):
-                    shortest_dist = connections_dict[value][1]
-                    #saves closest node, origin and distance
-                    shortest_node = connections_dict[value][0]
-                    origin = connections_dict["origin"][0]
-                    print ("current shortest path:",shortest_dist, " from", origin.get_name(), "to", shortest_node.get_name())
-            
-        visited_list.append(shortest_node)
-        visit_list.remove(shortest_node)
-        final_tree.append([origin, shortest_node, shortest_dist])
-        print("removing", shortest_node.get_name(), "from visit list")
-
-    #Generate a new BDD, with the shortest paths
-    print("\n############## Re-creating structure ##############")
-    new_bdd = BddGraph()
-    for node in final_tree:
-        try:
-            node_name1 = node[0].get_name()
-            new_bdd.include(node_name1)
-            node1 = new_bdd.get_node(node_name1)
-
-            node_name2 = node[1].get_name()            
-            new_bdd.include(node_name2)
-            node2 = new_bdd.get_node(node_name2)
-
-            distance = node[2]
-            node1.connect(node2, distance)
-            node2.connect(node1, distance)
-        except:
-            print('Error creating connection', connection)
-
-    print("### Final structure resulting from Prim: "+new_bdd.to_str())
-    return new_bdd
+    ##Should continue here but i didn't get it to work properly
 
 
 ## Loads a .txt file containing a BDD graph for prim/dijkstra algorithm
@@ -312,7 +291,7 @@ def load_file(filename, algorithm, starting_node_name):
             print('Error creating connection', connection)
 
 
-    print(bdd_graph.to_str())
+    print("\n############## Loaded structure ##############:", bdd_graph.to_str(), "\n")
     starting_node = bdd_graph.get_node(starting_node_name)
     final_node = node2
     if algorithm == "prim":
@@ -332,8 +311,8 @@ if __name__ == "__main__":
         starting_node_name = sys.argv[3]
         load_file(filename, algorithm, starting_node_name)
     except:
-        print ('invalid arguments')
-        filename = "bdd.txt"
-        algorithm = "tsm"
-        starting_node_name = 3
+        filename = "dijkstra_test.txt"
+        algorithm = "dijkstra"
+        starting_node_name = 7
+        print ('Testing with main arguments: \nFile: {}\nAlgorithm: {}\nStarting Node: {}\n'.format(filename, algorithm, starting_node_name))
         load_file(filename, algorithm, starting_node_name)
