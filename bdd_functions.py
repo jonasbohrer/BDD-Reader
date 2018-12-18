@@ -137,7 +137,7 @@ def prim(bdd_graph, starting_node, ignore = []):
             node1.connect(node2, distance)
             node2.connect(node1, distance)
         except:
-            print('Error creating connection', connection)
+            print('Error creating connection', node)
 
     print("### Final structure resulting from Prim: "+new_bdd.to_str())
     return new_bdd
@@ -311,8 +311,8 @@ if __name__ == "__main__":
         starting_node_name = sys.argv[3]
         load_file(filename, algorithm, starting_node_name)
     except:
-        filename = "dijkstra_test.txt"
-        algorithm = "dijkstra"
-        starting_node_name = 7
+        filename = 'tests/prim_test.txt'
+        algorithm = "prim"
+        starting_node_name = 1
         print ('Testing with main arguments: \nFile: {}\nAlgorithm: {}\nStarting Node: {}\n'.format(filename, algorithm, starting_node_name))
         load_file(filename, algorithm, starting_node_name)
